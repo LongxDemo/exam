@@ -1,0 +1,108 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class  LockerApplication{
+    private JFrame frame;
+    private JPasswordField passwordField;
+    private JButton enterButton, clearButton;
+    private JLabel statusLabel;
+    private String savedPassword = "";
+
+    public LockerApplication() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame("Lock Class");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Create number buttons
+        JPanel numberPanel = new JPanel(new GridLayout(3, 3));
+        for (int i = 1; i <= 9; i++) {
+            JButton button = new JButton(String.valueOf(i));
+            button.addActionListener(new NumberButtonListener());
+            numberPanel.add(button);
+        }
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        frame.add(numberPanel, gbc);
+
+        // Password field
+        passwordField = new JPasswordField(10);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        frame.add(passwordField, gbc);
+
+        // Enter button
+        enterButton = new JButton("Enter");
+        enterButton.addActionListener(new EnterButtonListener());
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        frame.add(enterButton, gbc);
+
+        // Clear button
+        clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ClearButtonListener());
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        frame.add(clearButton, gbc);
+
+        // Status label
+        statusLabel = new JLabel("Enter Password");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        frame.add(statusLabel, gbc);
+
+        frame.setVisible(true);
+    }
+
+    private class NumberButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton source = (JButton) e.getSource();
+            String currentText = new String(passwordField.getPassword());
+            passwordField.setText(currentText + source.getText());
+        }
+    }
+
+    private class EnterButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String enteredPassword = new String(passwordField.getPassword());
+            if (savedPassword.isEmpty()) {
+                savedPassword = enteredPassword;
+                statusLabel.setText("Password Set");
+            } else {
+                if (savedPassword.equals(enteredPassword)) {
+                    statusLabel.setText("Correct Password");
+                } else {
+                    statusLabel.setText("Incorrect Password");
+                }
+            }
+            passwordField.setText("");
+        }
+    }
+
+    private class ClearButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            passwordField.setText("");
+            statusLabel.setText("Enter Password");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(LockerApplication::new);
+    }
+}
