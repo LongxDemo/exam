@@ -1,0 +1,63 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class ProductJDBC {
+
+    public static void main(String[] args) {
+        String url = "jdbc:sqlite:products.db"; // Change this URL for your database
+
+        try {
+            // Load the SQLite JDBC driver (you must include the SQLite JDBC library in your project)
+            Class.forName("org.sqlite.JDBC");
+
+            // Establish a connection to the database
+            Connection conn = DriverManager.getConnection(url);
+
+            if (conn != null) {
+                // Create a statement
+                Statement stmt = conn.createStatement();
+
+                // Create the Product table
+                String createTableSQL = "CREATE TABLE IF NOT EXISTS Product (" +
+                        "id INT PRIMARY KEY, " +
+                        "name VARCHAR(255), " +
+                        "price_per_unit DOUBLE, " +
+                        "active_for_sell BOOLEAN)";
+                stmt.executeUpdate(createTableSQL);
+
+                // Insert sample data
+                String insertDataSQL = "INSERT INTO Product (id, name, price_per_unit, active_for_sell) VALUES " +
+                        "(1, 'Coke', 2.00, TRUE), " +
+                        "(2, 'Pepsi', 2.00, TRUE), " +
+                        "(3, 'Kizz', 1.50, TRUE), " +
+                        "(4, 'Redbull', 2.00, FALSE)";
+                stmt.executeUpdate(insertDataSQL);
+
+                // Execute a query to retrieve all products
+                String selectSQL = "SELECT id, name, price_per_unit, active_for_sell FROM Product";
+                ResultSet rs = stmt.executeQuery(selectSQL);
+
+                // Process the result set
+                System.out.println("id | name   | price_per_unit | active_for_sell");
+                System.out.println("-------------------------------------------");
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    double price = rs.getDouble("price_per_unit");
+                    boolean active = rs.getBoolean("active_for_sell");
+
+                    System.out.printf("%d | %s | %.2f | %b%n", id, name, price, active);
+                }
+
+                // Close the result set, statement, and connection
+                rs.close();
+                stmt.close();
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
