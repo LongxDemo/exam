@@ -1,0 +1,94 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculator extends JFrame implements ActionListener {
+    // Components of the Calculator
+    private JTextField firstNumberField, secondNumberField, resultField;
+    private JButton addButton, subtractButton, multiplyButton, divideButton, modulusButton, clearButton;
+
+    public Calculator() {
+        // Create JFrame instance
+        JFrame frame = new JFrame("Calculator");
+        frame.setSize(400, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Set layout
+        frame.setLayout(new GridLayout(6, 2));
+
+        // Create text fields
+        firstNumberField = new JTextField();
+        secondNumberField = new JTextField();
+        resultField = new JTextField();
+        resultField.setEditable(false);
+
+        // Create buttons
+        addButton = new JButton("+");
+        subtractButton = new JButton("-");
+        multiplyButton = new JButton("*");
+        divideButton = new JButton("/");
+        modulusButton = new JButton("%");
+        clearButton = new JButton("Clear");
+
+        // Add action listeners to buttons
+        addButton.addActionListener(this);
+        subtractButton.addActionListener(this);
+        multiplyButton.addActionListener(this);
+        divideButton.addActionListener(this);
+        modulusButton.addActionListener(this);
+        clearButton.addActionListener(this);
+
+        // Add components to frame
+        frame.add(new JLabel("First Number:"));
+        frame.add(firstNumberField);
+        frame.add(new JLabel("Second Number:"));
+        frame.add(secondNumberField);
+        frame.add(new JLabel("Result:"));
+        frame.add(resultField);
+
+        frame.add(addButton);
+        frame.add(subtractButton);
+        frame.add(multiplyButton);
+        frame.add(divideButton);
+        frame.add(modulusButton);
+        frame.add(clearButton);
+
+        // Set frame visibility
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new Calculator();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            double num1 = Double.parseDouble(firstNumberField.getText());
+            double num2 = Double.parseDouble(secondNumberField.getText());
+            double result = 0;
+
+            if (e.getSource() == addButton) {
+                result = num1 + num2;
+            } else if (e.getSource() == subtractButton) {
+                result = num1 - num2;
+            } else if (e.getSource() == multiplyButton) {
+                result = num1 * num2;
+            } else if (e.getSource() == divideButton) {
+                result = num1 / num2;
+            } else if (e.getSource() == modulusButton) {
+                result = num1 % num2;
+            } else if (e.getSource() == clearButton) {
+                firstNumberField.setText("");
+                secondNumberField.setText("");
+                resultField.setText("");
+                return;
+            }
+
+            resultField.setText(String.valueOf(result));
+        } catch (NumberFormatException ex) {
+            resultField.setText("Invalid input");
+        }
+    }
+}
